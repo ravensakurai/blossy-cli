@@ -1,5 +1,5 @@
 """Package for the COUNT LINES command."""
 
-from .use_case import CountLinesUseCaseFactory
+from .use_case import CountLinesUseCase, CountLinesUseCaseFactory
 
-__all__ = ["CountLinesUseCaseFactory"]
+__all__ = ["CountLinesUseCaseFactory", "CountLinesUseCase"]
