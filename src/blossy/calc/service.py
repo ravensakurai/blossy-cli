@@ -5,7 +5,7 @@ from sly.lex import Token
 from sly.yacc import YaccProduction
 
 from blossy.calc.error import ParsingError
-from blossy.calc.model import Time, ExpressionResult
+from blossy.calc.model import ExpressionResult, Time
 
 # TODO: ditch sly, cause WTF
 

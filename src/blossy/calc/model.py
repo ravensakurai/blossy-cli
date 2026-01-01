@@ -54,27 +54,37 @@ class Time:
     def __add__(self, other):
         if isinstance(other, Time):
             return Time(seconds=self.total_seconds + other.total_seconds)
-        raise TypeError(f"unsupported operand type(s) for +: 'Time' and '{type(other).__name__}'")
+        raise ArithmeticError(
+            f"unsupported operand type(s) for +: 'Time' and '{type(other).__name__}'"
+        )
 
     def __sub__(self, other):
         if isinstance(other, Time):
             return Time(seconds=self.total_seconds - other.total_seconds)
-        raise TypeError(f"unsupported operand type(s) for -: 'Time' and '{type(other).__name__}'")
+        raise ArithmeticError(
+            f"unsupported operand type(s) for -: 'Time' and '{type(other).__name__}'"
+        )
 
     def __mul__(self, other):
         if isinstance(other, (int, float)):
             return Time(seconds=int(self.total_seconds * other))
-        raise TypeError(f"unsupported operand type(s) for *: 'Time' and '{type(other).__name__}'")
+        raise ArithmeticError(
+            f"unsupported operand type(s) for *: 'Time' and '{type(other).__name__}'"
+        )
 
     def __rmul__(self, other):
         if isinstance(other, (int, float)):
             return Time(seconds=int(self.total_seconds * other))
-        raise TypeError(f"unsupported operand type(s) for *: '{type(other).__name__}' and 'Time'")
+        raise ArithmeticError(
+            f"unsupported operand type(s) for *: '{type(other).__name__}' and 'Time'"
+        )
 
     def __truediv__(self, other):
         if isinstance(other, (int, float)):
             return Time(seconds=int(self.total_seconds / other))
-        raise TypeError(f"unsupported operand type(s) for /: 'Time' and '{type(other).__name__}'")
+        raise ArithmeticError(
+            f"unsupported operand type(s) for /: 'Time' and '{type(other).__name__}'"
+        )
 
     def __str__(self):
         if self.total_seconds < 0:
