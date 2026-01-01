@@ -5,11 +5,11 @@ from typing import Annotated
 
 import typer
 
-from blossy.countc.use_case import CountCharactersUseCaseFactory
+from blossy.countc import CountCharactersUseCaseFactory
+from blossy.countl import CountLinesUseCaseFactory
 
 from .command import (
     calculate,
-    count_lines,
     percentage,
     random_cmd,
     standardize,
@@ -44,7 +44,26 @@ def countc(
         raise typer.BadParameter(f"'{file}' is not a file.") from e
 
 
-app.command("countl")(count_lines.execute)
+@app.command("countl")
+def countl(
+    file: Annotated[Path, typer.Argument(show_default=False, help="Relative path to the file.")],
+    ignore_blank: Annotated[bool, typer.Option(help="Ignore all blank lines.")] = True,
+    full_msg: Annotated[bool, typer.Option(help="Show full message.")] = True,
+):
+    """
+    COUNT LINES
+
+    Count the amount of lines in a code source file.
+    """
+    try:
+        use_case = CountLinesUseCaseFactory.get_use_case(ignore_blank, full_msg)
+        use_case.execute(file)
+    except FileNotFoundError as e:
+        raise typer.BadParameter(f"'{file}' does not exist.") from e
+    except IsADirectoryError as e:
+        raise typer.BadParameter(f"'{file}' is not a file.") from e
+
+
 app.command("perc")(percentage.execute)
 app.command("rand")(random_cmd.execute)
 app.command("stddz")(standardize.execute)
