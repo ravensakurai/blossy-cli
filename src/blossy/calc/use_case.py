@@ -215,7 +215,7 @@ class _CalculateUseCaseOption2:
         """Execute the use case."""
         token_generator = self._lexer.tokenize(expression)
         result = self._parser.parse(token_generator)
-        if not isinstance(result, int) and not isinstance(result, float):
+        if not isinstance(result, (int, float)):
             raise RuntimeError("Expected parser response to be a number.")
 
         print(result)
