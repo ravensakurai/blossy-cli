@@ -9,11 +9,10 @@ from blossy.countc import CountCharactersUseCaseFactory
 from blossy.countl import CountLinesUseCaseFactory
 from blossy.perc import PercentageUseCaseFactory
 from blossy.rand import RandomUseCaseFactory
+from blossy.stddz import StandardizeUseCaseFactory
 
 from .command import (
     calculate,
-    random_cmd,
-    standardize,
 )
 
 app = typer.Typer(name="blossy", help="A lil' bud that helps you with stuff (it's a utility CLI).")
@@ -115,4 +114,29 @@ def rand(
         raise e
 
 
-app.command("stddz")(standardize.execute)
+def execute(
+    prefix: Annotated[str, typer.Argument(show_default=False, help="Prefix of the files.")],
+    directory: Annotated[
+        Path, typer.Argument(show_default=False, help="Relative path to the directory.")
+    ],
+    start_idx: Annotated[
+        int, typer.Option("--start", "-s", help="Starting number for the IDs.")
+    ] = 0,
+    qt_digits: Annotated[
+        int,
+        typer.Option("--digits", "-d", help="Quantity of digits used to represent the ID."),
+    ] = 3,
+) -> None:
+    """
+    STANDARDIZE
+
+    Rename all files in a DIRECTORY to '{PREFIX}-{ID}', in which the ID is
+    calculated incrementally.
+    """
+    try:
+        use_case = StandardizeUseCaseFactory.get_use_case()
+        use_case.execute(prefix, directory, start_idx, qt_digits)
+    except FileNotFoundError as e:
+        raise typer.BadParameter(f"'{directory}' does not exist.") from e
+    except NotADirectoryError as e:
+        raise typer.BadParameter(f"'{directory}' is not a directory.") from e
