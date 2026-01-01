@@ -157,7 +157,7 @@ def rand(
     """
     RANDOM
 
-    Generate a random number between 'lower' an 'upper'.
+    Generate a random number between 'lower' and 'upper'.
     """
     try:
         use_case = RandomUseCaseFactory.get_use_case()
