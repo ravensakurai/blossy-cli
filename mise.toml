@@ -1,0 +1,39 @@
+[tools]
+poetry = "2.2"
+python = "3.13"
+
+[tasks.dependencies]
+alias = "deps"
+description = "Install dependencies"
+run = ["poetry lock", "poetry install"]
+
+[tasks.format]
+alias = "fmt"
+description = "Format code"
+run = [
+    "poetry run isort {{config_root}}/src {{config_root}}/test",
+    "poetry run black {{config_root}}/src {{config_root}}/test",
+]
+wait_for = ["dependencies"]
+
+[tasks.check]
+description = "Run type check and lint"
+run = [
+    "poetry run pyright {{config_root}}/src {{config_root}}/test",
+    "poetry run pylint {{config_root}}/src {{config_root}}/test",
+]
+wait_for = ["dependencies", "format"]
+
+[tasks.test]
+description = "Run tests"
+run = ["poetry run pytest {{config_root}}/test"]
+wait_for = ["dependencies", "format", "check"]
+
+[tasks.test-verbose]
+description = "Run tests with verbose output"
+run = ["poetry run pytest -vv {{config_root}}/test"]
+wait_for = ["dependencies", "format", "check"]
+
+[tasks.fct]
+description = "Format, run checks and run tests."
+depends = ["format", "check", "test"]
