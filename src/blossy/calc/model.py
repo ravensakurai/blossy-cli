@@ -20,31 +20,31 @@ class Time:
     def hours(self) -> int:
         """Hours component in HH:MM:SS display format."""
         absolute = abs(self._total_secs) // (60 * 60)
-        return absolute if self._total_secs >= 0 else 0 - absolute
+        return absolute if self._total_secs >= 0 else -absolute
 
     @property
     def minutes(self) -> int:
         """Minutes component in HH:MM:SS display format."""
         absolute = (abs(self._total_secs) % (60 * 60)) // 60
-        return absolute if self._total_secs >= 0 else 0 - absolute
+        return absolute if self._total_secs >= 0 else -absolute
 
     @property
     def seconds(self) -> int:
         """Seconds component in HH:MM:SS display format."""
         absolute = abs(self._total_secs) % 60
-        return absolute if self._total_secs >= 0 else 0 - absolute
+        return absolute if self._total_secs >= 0 else -absolute
 
     @property
     def total_hours(self) -> int:
         """Total duration converted to whole hours."""
         absolute = abs(self._total_secs) // (60 * 60)
-        return absolute if self._total_secs >= 0 else 0 - absolute
+        return absolute if self._total_secs >= 0 else -absolute
 
     @property
     def total_minutes(self) -> int:
         """Total duration converted to whole minutes."""
         absolute = abs(self._total_secs) // 60
-        return absolute if self._total_secs >= 0 else 0 - absolute
+        return absolute if self._total_secs >= 0 else -absolute
 
     @property
     def total_seconds(self) -> int:
