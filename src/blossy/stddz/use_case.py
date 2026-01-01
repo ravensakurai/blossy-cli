@@ -55,9 +55,9 @@ class _StandardizeUseCaseOption1:
             min_qt_digits = len(str(last_id))
             if min_qt_digits > qt_digits:
                 qt_digits = min_qt_digits
-                qt_reajusted = True
+                qt_readjusted = True
             else:
-                qt_reajusted = False
+                qt_readjusted = False
 
             # to prevent overriding previous files
             temp_prefix = "".join(choices(ascii_letters, k=10))
@@ -66,8 +66,8 @@ class _StandardizeUseCaseOption1:
             files = self._get_files(dir_abs_path)
             self._rename(dir_abs_path, files, prefix, qt_digits, start_idx)
 
-            if qt_reajusted:
-                print("Quantity of digits had to be reajusted.")
+            if qt_readjusted:
+                print("Quantity of digits had to be readjusted.")
         except FileNotFoundError as e:
             raise typer.BadParameter(f"'{dir_abs_path}' does not exist.") from e
         except NotADirectoryError as e:
