@@ -29,10 +29,10 @@ class StandardizeUseCaseFactory:
     @staticmethod
     def get_use_case() -> StandardizeUseCase:
         """Get an instance of the STANDARDIZE use case."""
-        return StandardizeUseCaseOption1()
+        return _StandardizeUseCaseOption1()
 
 
-class StandardizeUseCaseOption1:
+class _StandardizeUseCaseOption1:
     """Use case for standardizing file names."""
 
     def execute(
@@ -42,6 +42,7 @@ class StandardizeUseCaseOption1:
         start_idx: int = 0,
         qt_digits: int = 3,
     ) -> None:
+        """Execute the use case."""
         if start_idx < 0:
             raise typer.BadParameter("Negative starting number.")
 

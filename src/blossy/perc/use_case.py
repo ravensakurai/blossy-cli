@@ -21,16 +21,19 @@ class PercentageUseCaseFactory:
         full_msg: bool,
     ) -> PercentageUseCase:
         """Get an instance of the PERCENTAGE use case based on the flags."""
-        return PercentageUseCaseOption1(full_msg)
+        return _PercentageUseCaseOption1(full_msg)
 
 
-class PercentageUseCaseOption1:
+class _PercentageUseCaseOption1:
     """Use case for calculating percentages."""
+
+    _full_msg: bool
 
     def __init__(self, full_msg: bool) -> None:
         self._full_msg = full_msg
 
     def execute(self, whole: float | None, part: float | None, ratio: float | None) -> None:
+        """Execute the use case."""
         if whole is not None and part is not None:
             if whole == 0:
                 raise typer.BadParameter("Result does not exist.")

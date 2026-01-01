@@ -20,13 +20,14 @@ class RandomUseCaseFactory:
     @staticmethod
     def get_use_case() -> RandomUseCase:
         """Get an instance of the RANDOM use case based on the flags."""
-        return RandomUseCaseOption1()
+        return _RandomUseCaseOption1()
 
 
-class RandomUseCaseOption1:
+class _RandomUseCaseOption1:
     """Use case for generating random numbers."""
 
     def execute(self, lower: int, upper: int, quantity: int = 1) -> None:
+        """Execute the use case."""
         if lower > upper:
             raise typer.BadParameter("Invalid range.")
 

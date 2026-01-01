@@ -5,19 +5,71 @@ from typing import Annotated
 
 import typer
 
-from blossy.countc import CountCharactersUseCaseFactory
-from blossy.countl import CountLinesUseCaseFactory
-from blossy.perc import PercentageUseCaseFactory
-from blossy.rand import RandomUseCaseFactory
-from blossy.stddz import StandardizeUseCaseFactory
-
-from .command import (
-    calculate,
-)
+from blossy.calc.service import ExpressionLexer, ExpressionParser
+from blossy.calc.use_case import CalculateUseCaseFactory, PostfixedExpressionParser
+from blossy.countc.use_case import CountCharactersUseCaseFactory
+from blossy.countl.use_case import CountLinesUseCaseFactory
+from blossy.perc.use_case import PercentageUseCaseFactory
+from blossy.rand.use_case import RandomUseCaseFactory
+from blossy.stddz.use_case import StandardizeUseCaseFactory
 
 app = typer.Typer(name="blossy", help="A lil' bud that helps you with stuff (it's a utility CLI).")
 
-app.command("calc")(calculate.execute)
+
+@app.command()
+def calc(
+    expression: Annotated[
+        str, typer.Argument(show_default=False, help="Expression to be calculated.")
+    ],
+    visualize: Annotated[
+        bool,
+        typer.Option(
+            "--visualize",
+            "-v",
+            help="Show a visualization using postfix notation and a stack.",
+        ),
+    ] = False,
+):
+    """
+    CALCULATE
+
+    Calculate the value of a mathematical expression involving numbers and time.
+
+    Number syntax:\n
+    • Integers: 123\n
+    • Decimals: 12.34\n
+
+    Time syntax:\n
+    • 43:21 (43 minutes, 21 seconds)\n
+    • 65:43:21 (65 hours, 43 minutes, 21 seconds)\n
+
+    Available operations:\n
+    • (expr) - Grouping\n
+    • +expr - Unary plus\n
+    • -expr - Unary minus\n
+    • expr ^ expr - Exponentiation\n
+    • expr * expr - Multiplication\n
+    • expr / expr - Division\n
+    • expr + expr - Addition\n
+    • expr - expr - Subtraction\n
+
+    Operation rules for time:\n
+    • Time + Time = Time\n
+    • Time - Time = Time\n
+    • Time * Number = Time\n
+    • Number * Time = Time\n
+    • Time / Number = Time\n
+    """
+    try:
+        lexer = ExpressionLexer()
+        regular_parser = ExpressionParser()
+        postfixed_parser = PostfixedExpressionParser()
+        use_case = CalculateUseCaseFactory.get_use_case(
+            lexer, regular_parser, postfixed_parser, visualize
+        )
+        use_case.execute(expression)
+    except Exception as e:
+        raise typer.BadParameter(str(e)) from e
 
 
 @app.command()
@@ -114,7 +166,8 @@ def rand(
         raise e
 
 
-def execute(
+@app.command()
+def stddz(
     prefix: Annotated[str, typer.Argument(show_default=False, help="Prefix of the files.")],
     directory: Annotated[
         Path, typer.Argument(show_default=False, help="Relative path to the directory.")

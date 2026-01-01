@@ -23,20 +23,23 @@ class CountCharactersUseCaseFactory:
     ) -> CountCharactersUseCase:
         """Get an instance of the COUNT CHARACTERS use case based on the flags."""
         if ignore_unnec:
-            return CountCharactersUseCaseOption1(full_msg)
-        elif ignore_ws:
-            return CountCharactersUseCaseOption2(full_msg)
-        else:
-            return CountCharactersUseCaseOption3(full_msg)
+            return _CountCharactersUseCaseOption1(full_msg)
+        if ignore_ws:
+            return _CountCharactersUseCaseOption2(full_msg)
+
+        return _CountCharactersUseCaseOption3(full_msg)
 
 
-class CountCharactersUseCaseOption1:
+class _CountCharactersUseCaseOption1:
     """Use case for counting characters while ignoring unnecessary whitespace."""
+
+    _full_msg: bool
 
     def __init__(self, full_msg: bool) -> None:
         self._full_msg = full_msg
 
     def execute(self, file: Path):
+        """Execute the use case."""
         current_dir = Path.cwd()
         file_abs_path = current_dir / file
 
@@ -49,7 +52,7 @@ class CountCharactersUseCaseOption1:
                 if not char:
                     break
 
-                elif not (char.isspace() and prev_char.isspace()):
+                if not (char.isspace() and prev_char.isspace()):
                     char_count += 1
 
                 if prev_char == "":
@@ -65,13 +68,16 @@ class CountCharactersUseCaseOption1:
             print(f"Character count: {char_count}" if self._full_msg else char_count)
 
 
-class CountCharactersUseCaseOption2:
+class _CountCharactersUseCaseOption2:
     """Use case for counting characters while ignoring all whitespace."""
+
+    _full_msg: bool
 
     def __init__(self, full_msg: bool) -> None:
         self._full_msg = full_msg
 
     def execute(self, file: Path):
+        """Execute the use case."""
         current_dir = Path.cwd()
         file_abs_path = current_dir / file
 
@@ -88,13 +94,16 @@ class CountCharactersUseCaseOption2:
             print(f"Character count: {char_count}" if self._full_msg else char_count)
 
 
-class CountCharactersUseCaseOption3:
+class _CountCharactersUseCaseOption3:
     """Use case for counting characters while ignoring nothing."""
+
+    _full_msg: bool
 
     def __init__(self, full_msg: bool) -> None:
         self._full_msg = full_msg
 
     def execute(self, file: Path):
+        """Execute the use case."""
         current_dir = Path.cwd()
         file_abs_path = current_dir / file
 
