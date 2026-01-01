@@ -1,4 +1,4 @@
-"""Module for COUNT CHARACTERS errors."""
+"""Module for CALCULATE errors."""
 
 
 class ParsingError(Exception):
