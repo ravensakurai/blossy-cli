@@ -11,17 +11,33 @@ run = ["poetry lock", "poetry install"]
 alias = "fmt"
 description = "Format code"
 run = [
-    "poetry run isort {{config_root}}/src {{config_root}}/test",
-    "poetry run black {{config_root}}/src {{config_root}}/test",
+    "poetry run isort {{config_root}}/src",
+    "poetry run black {{config_root}}/src",
+    "poetry run isort {{config_root}}/test",
+    "poetry run black {{config_root}}/test",
 ]
 wait_for = ["dependencies"]
 
-[tasks.check]
-description = "Run type check and lint"
+[tasks.type-check]
+alias = "type"
+description = "Run type checker"
 run = [
-    "poetry run pyright {{config_root}}/src {{config_root}}/test",
-    "poetry run pylint {{config_root}}/src {{config_root}}/test",
+    "poetry run pyright {{config_root}}/src",
+    "poetry run pyright {{config_root}}/test",
 ]
+wait_for = ["dependencies", "format"]
+
+[tasks.lint]
+description = "Run linter"
+run = [
+    "poetry run pylint {{config_root}}/src",
+    "poetry run pylint {{config_root}}/test",
+]
+wait_for = ["dependencies", "format", "type-check"]
+
+[tasks.check]
+description = "Run type checker and linter"
+depends = ["type-check", "lint"]
 wait_for = ["dependencies", "format"]
 
 [tasks.test]
@@ -30,10 +46,11 @@ run = ["poetry run pytest {{config_root}}/test"]
 wait_for = ["dependencies", "format", "check"]
 
 [tasks.test-verbose]
+alias = "testv"
 description = "Run tests with verbose output"
 run = ["poetry run pytest -vv {{config_root}}/test"]
 wait_for = ["dependencies", "format", "check"]
 
 [tasks.fct]
-description = "Format, run checks and run tests."
+description = "Format, check and test"
 depends = ["format", "check", "test"]
