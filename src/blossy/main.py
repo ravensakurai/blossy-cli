@@ -3,17 +3,63 @@
 from pathlib import Path
 from typing import Annotated
 
+import tomlkit
 import typer
 
 from blossy.calc.service import ExpressionLexer, ExpressionParser
 from blossy.calc.use_case import CalculateUseCaseFactory, PostfixedExpressionParser
+from blossy.config.service import ConfigGatekeeer
+from blossy.config.use_case import ConfigurateUseCaseFactory
 from blossy.countc.use_case import CountCharactersUseCaseFactory
 from blossy.countl.use_case import CountLinesUseCaseFactory
 from blossy.perc.use_case import PercentageUseCaseFactory
 from blossy.rand.use_case import RandomUseCaseFactory
+from blossy.shared.adapter import FileAdapter
+from blossy.shared.error import ConfigError, InternalError
+from blossy.shared.model import SUPPORTED_CONFIG_TYPES, TomlValue
+from blossy.shared.repository import ConfigRepository
 from blossy.stddz.use_case import StandardizeUseCaseFactory
 
 app = typer.Typer(name="blossy", help="A lil' bud that helps you with stuff (it's a utility CLI).")
+
+
+@app.command()
+def config(
+    subcommand: Annotated[str, typer.Argument(show_default=False, help="Subcommand to configure.")],
+    key: Annotated[
+        str,
+        typer.Argument(show_default=False, help="Configuration key to set."),
+    ],
+    value: Annotated[
+        str,
+        typer.Argument(show_default=False, help="Value to assign to the configuration key."),
+    ],
+):
+    """
+    CONFIGURATE
+
+    Set a configuration value for a specific subcommand.
+    """
+
+    try:
+        file_adapter = FileAdapter()
+        gatekeeper = ConfigGatekeeer()
+        repository = ConfigRepository(file_adapter)
+        use_case = ConfigurateUseCaseFactory.get_use_case(gatekeeper, repository)
+
+        parsed_value = _parse_toml_value(value)
+        use_case.execute(subcommand, key, parsed_value)
+    except ConfigError as e:
+        raise typer.BadParameter(str(e)) from e
+    except InternalError as e:
+        raise typer.BadParameter(str(e)) from e
+
+
+def _parse_toml_value(raw_value: str) -> TomlValue:
+    parsed = tomlkit.parse(f"value = {raw_value}")
+    toml_item = parsed["value"]
+    value = toml_item.unwrap()
+    return value if isinstance(value, tuple(SUPPORTED_CONFIG_TYPES)) else raw_value
 
 
 @app.command()
