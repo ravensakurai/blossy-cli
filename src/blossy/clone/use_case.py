@@ -5,9 +5,9 @@ from typing import Protocol
 from blossy.shared.error import ConfigError
 from blossy.shared.model import TomlValue
 
-_URL_TEMPLATE = "{prefix}github.com:{user}/{repository}.git"
-_PREFIX_SSH = "git@"
-_PREFIX_HTTPS = "https://"
+_URL_TEMPLATE = "{prefix}{user}/{repository}.git"
+_PREFIX_SSH = "git@github.com:"
+_PREFIX_HTTPS = "https://github.com/"
 
 
 class ConfigRepository(Protocol):
