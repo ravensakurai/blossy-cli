@@ -75,7 +75,10 @@ class _CloneUseCaseOption1:
     def _load_configured_user(self) -> str:
         user = self._config_repository.get_property("clone", "github-user")
         if not user:
-            raise ConfigError("GitHub user is not configured for 'clone' subcommand.")
+            raise ConfigError(
+                "GitHub user is not configured for 'clone' subcommand. "
+                "Use 'blossy config clone github-user <username>' to set it."
+            )
         if not isinstance(user, str):
             raise ConfigError("GitHub user configuration is not a string.")
 
