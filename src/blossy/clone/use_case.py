@@ -33,18 +33,18 @@ class CloneUseCaseFactory:
     """Factory for creating CLONE use cases."""
 
     @staticmethod
-    def get_use_case(config_service: ConfigRepository) -> CloneUseCase:
+    def get_use_case(config_repository: ConfigRepository) -> CloneUseCase:
         """Get an instance of the CLONE use case based on the flags."""
-        return _CloneUseCaseOption1(config_service)
+        return _CloneUseCaseOption1(config_repository)
 
 
 class _CloneUseCaseOption1:
     """Use case for cloning GitHub repositories."""
 
-    _config_service: ConfigRepository
+    _config_repository: ConfigRepository
 
-    def __init__(self, config_service: ConfigRepository) -> None:
-        self._config_service = config_service
+    def __init__(self, config_repository: ConfigRepository) -> None:
+        self._config_repository = config_repository
 
     def execute(self, repositories: list[str], use_https: bool) -> None:
         prefix = _PREFIX_HTTPS if use_https else _PREFIX_SSH
@@ -60,7 +60,7 @@ class _CloneUseCaseOption1:
             run(["git", "clone", repo_url], check=True)
 
     def _load_configured_user(self) -> str:
-        user = self._config_service.get_property("clone", "github_user")
+        user = self._config_repository.get_property("clone", "github-user")
         if not user:
             raise ConfigError("GitHub user is not configured for 'clone' subcommand.")
         if not isinstance(user, str):

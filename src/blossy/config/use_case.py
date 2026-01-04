@@ -40,15 +40,13 @@ class ConfigureUseCaseFactory:
     """Factory for creating CONFIGURE use cases."""
 
     @staticmethod
-    def get_use_case(
-        validator: ConfigValidator, repository: ConfigRepository
-    ) -> ConfigureUseCase:
+    def get_use_case(validator: ConfigValidator, repository: ConfigRepository) -> ConfigureUseCase:
         """Get an instance of the CONFIGURE use case based on the flags."""
         return _ConfigureUseCaseOption1(validator, repository)
 
 
 class _ConfigureUseCaseOption1:
-    """Use case for cloning GitHub repositories."""
+    """Use case for setting configurations."""
 
     _validator: ConfigValidator
     _repository: ConfigRepository
