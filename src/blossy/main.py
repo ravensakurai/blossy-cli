@@ -9,7 +9,7 @@ import typer
 from blossy.calc.service import ExpressionLexer, ExpressionParser
 from blossy.calc.use_case import CalculateUseCaseFactory, PostfixedExpressionParser
 from blossy.clone.use_case import CloneUseCaseFactory
-from blossy.config.service import ConfigGatekeeper
+from blossy.config.service import ConfigValidator
 from blossy.config.use_case import ConfigurateUseCaseFactory
 from blossy.countc.use_case import CountCharactersUseCaseFactory
 from blossy.countl.use_case import CountLinesUseCaseFactory
@@ -128,9 +128,9 @@ def config(
 
     try:
         file_adapter = FileAdapter()
-        gatekeeper = ConfigGatekeeper()
+        validator = ConfigValidator()
         repository = ConfigRepository(file_adapter)
-        use_case = ConfigurateUseCaseFactory.get_use_case(gatekeeper, repository)
+        use_case = ConfigurateUseCaseFactory.get_use_case(validator, repository)
 
         parsed_value = _parse_value(value)
         use_case.execute(subcommand, key, parsed_value)

@@ -4,15 +4,15 @@ from typing import Any
 
 import pytest
 
-from blossy.config.service import ConfigGatekeeer
+from blossy.config.service import ConfigValidator
 
 
 @pytest.fixture()
-def gatekeeper() -> ConfigGatekeeer:
-    return ConfigGatekeeer()
+def validator() -> ConfigValidator:
+    return ConfigValidator()
 
 
-class TestConfigGatekeeerIsSubcommandSupported:
+class TestConfigValidatorIsSubcommandSupported:
     @pytest.mark.parametrize(
         "subcommand,expected",
         [
@@ -24,12 +24,12 @@ class TestConfigGatekeeerIsSubcommandSupported:
         ],
     )
     def test_is_subcommand_supported(
-        self, gatekeeper: ConfigGatekeeer, subcommand: str, expected: bool
+        self, validator: ConfigValidator, subcommand: str, expected: bool
     ) -> None:
-        assert gatekeeper.is_subcommand_supported(subcommand) == expected
+        assert validator.is_subcommand_supported(subcommand) == expected
 
 
-class TestConfigGatekeeerIsKeySupported:
+class TestConfigValidatorIsKeySupported:
     @pytest.mark.parametrize(
         "key,expected",
         [
@@ -40,11 +40,11 @@ class TestConfigGatekeeerIsKeySupported:
             ("", False),
         ],
     )
-    def test_is_key_supported(self, gatekeeper: ConfigGatekeeer, key: str, expected: bool) -> None:
-        assert gatekeeper.is_key_supported(key) == expected
+    def test_is_key_supported(self, validator: ConfigValidator, key: str, expected: bool) -> None:
+        assert validator.is_key_supported(key) == expected
 
 
-class TestConfigGatekeeerIsValueTypeValid:
+class TestConfigValidatorIsValueTypeValid:
     @pytest.mark.parametrize(
         "key,value,expected",
         [
@@ -58,33 +58,6 @@ class TestConfigGatekeeerIsValueTypeValid:
         ],
     )
     def test_is_value_type_valid(
-        self, gatekeeper: ConfigGatekeeer, key: str, value: Any, expected: bool
+        self, validator: ConfigValidator, key: str, value: Any, expected: bool
     ) -> None:
-        assert gatekeeper.is_value_type_valid(key, value) == expected
-
-
-class TestConfigGatekeeerGetInternalPropertyName:
-    @pytest.mark.parametrize(
-        "external_name,expected",
-        [
-            ("github-user", "github_user"),
-            ("GITHUB-USER", "github_user"),
-            ("Github-User", "github_user"),
-        ],
-    )
-    def test_get_internal_property_name_success(
-        self, gatekeeper: ConfigGatekeeer, external_name: str, expected: str | None
-    ) -> None:
-        assert gatekeeper.get_internal_property_name(external_name) == expected
-
-    @pytest.mark.parametrize(
-        "external_name",
-        [
-            "invalid-key",
-            "",
-        ],
-    )
-    def test_get_internal_property_name_not_found(
-        self, gatekeeper: ConfigGatekeeer, external_name: str
-    ) -> None:
-        assert gatekeeper.get_internal_property_name(external_name) is None
+        assert validator.is_value_type_valid(key, value) == expected

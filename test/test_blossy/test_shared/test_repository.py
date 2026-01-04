@@ -8,16 +8,16 @@ from blossy.shared.model import TomlValue
 from blossy.shared.repository import ConfigRepository
 
 FILE_1 = """[clone]
-github_user = "ravensakurai"
+github-user = "ravensakurai"
 """
 
 FILE_2 = """[clone]
-github_user = "ravensakurai"
-new_key = "value"
+github-user = "ravensakurai"
+new-key = "value"
 """
 
 FILE_3 = """[clone]
-github_user = "monkeydluffy"
+github-user = "monkeydluffy"
 """
 
 
@@ -75,7 +75,7 @@ class TestGetProperty:
             [FILE_1],
         )
 
-        result = repository.get_property("clone", "github_user")
+        result = repository.get_property("clone", "github-user")
 
         assert result == "ravensakurai"
         assert len(file_adapter.read_text_calls) == 1
@@ -89,7 +89,7 @@ class TestGetProperty:
             [FILE_1],
         )
 
-        result = repository.get_property("invalid", "github_user")
+        result = repository.get_property("invalid", "github-user")
 
         assert result is None
         assert len(file_adapter.read_text_calls) == 1
@@ -113,7 +113,7 @@ class TestGetProperty:
     ) -> None:
         monkeypatch.setattr(file_adapter, "_read_text_outputs", [""])
 
-        result = repository.get_property("clone", "github_user")
+        result = repository.get_property("clone", "github-user")
 
         assert result is None
         assert len(file_adapter.read_text_calls) == 1
@@ -125,7 +125,7 @@ class TestSetProperty:
     ) -> None:
         monkeypatch.setattr(file_adapter, "_read_text_outputs", [""])
 
-        repository.set_property("clone", "github_user", "ravensakurai")
+        repository.set_property("clone", "github-user", "ravensakurai")
 
         assert len(file_adapter.read_text_calls) == 1
         assert len(file_adapter.write_text_calls) == 1
@@ -142,7 +142,7 @@ class TestSetProperty:
             [FILE_1],
         )
 
-        repository.set_property("clone", "new_key", "value")
+        repository.set_property("clone", "new-key", "value")
 
         assert len(file_adapter.read_text_calls) == 1
         assert len(file_adapter.write_text_calls) == 1
@@ -159,7 +159,7 @@ class TestSetProperty:
             [FILE_1],
         )
 
-        repository.set_property("clone", "github_user", "monkeydluffy")
+        repository.set_property("clone", "github-user", "monkeydluffy")
 
         assert len(file_adapter.read_text_calls) == 1
         assert len(file_adapter.write_text_calls) == 1
