@@ -7,6 +7,30 @@ alias = "deps"
 description = "Install dependencies"
 run = ["poetry lock", "poetry install"]
 
+[tasks.format-check]
+description = "Check code formatting (for workflow)"
+run = [
+    "poetry run black --check {{config_root}}/src {{config_root}}/test",
+    "poetry run isort --check {{config_root}}/src {{config_root}}/test",
+]
+wait_for = ["dependencies", "format"]
+
+[tasks.type-check]
+alias = "type"
+description = "Run type checker"
+run = ["poetry run pyright {{config_root}}/src {{config_root}}/test"]
+wait_for = ["dependencies", "format-check"]
+
+[tasks.lint]
+description = "Run linter"
+run = ["poetry run pylint {{config_root}}/src {{config_root}}/test"]
+wait_for = ["dependencies", "format-check"]
+
+[tasks.check]
+description = "Run type checker and linter"
+depends = ["type-check", "lint"]
+wait_for = ["dependencies", "format"]
+
 [tasks.format]
 alias = "fmt"
 description = "Format code"
@@ -16,32 +40,16 @@ run = [
 ]
 wait_for = ["dependencies"]
 
-[tasks.type-check]
-alias = "type"
-description = "Run type checker"
-run = ["poetry run pyright {{config_root}}/src {{config_root}}/test"]
-wait_for = ["dependencies", "format"]
-
-[tasks.lint]
-description = "Run linter"
-run = ["poetry run pylint {{config_root}}/src {{config_root}}/test"]
-wait_for = ["dependencies", "format", "type-check"]
-
-[tasks.check]
-description = "Run type checker and linter"
-depends = ["type-check", "lint"]
-wait_for = ["dependencies", "format"]
-
 [tasks.test]
 description = "Run tests"
 run = ["poetry run pytest {{config_root}}/test"]
-wait_for = ["dependencies", "format", "check"]
+wait_for = ["dependencies", "format"]
 
 [tasks.test-verbose]
 alias = "testv"
 description = "Run tests with verbose output"
 run = ["poetry run pytest -vv {{config_root}}/test"]
-wait_for = ["dependencies", "format", "check"]
+wait_for = ["dependencies", "format"]
 
 [tasks.fct]
 description = "Format, check and test"
