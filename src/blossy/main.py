@@ -16,7 +16,6 @@ from blossy.countl.use_case import CountLinesUseCaseFactory
 from blossy.perc.use_case import PercentageUseCaseFactory
 from blossy.rand.use_case import RandomUseCaseFactory
 from blossy.shared.adapter import FileAdapter, SubprocessAdapter
-from blossy.shared.error import ConfigError
 from blossy.shared.model import SUPPORTED_CONFIG_TYPES, TomlValue
 from blossy.shared.repository import ConfigRepository
 from blossy.stddz.use_case import StandardizeUseCaseFactory
@@ -106,6 +105,7 @@ def clone(
         use_case.execute(repositories, use_https)
     except Exception as e:
         typer.echo(str(e), err=True)
+        raise typer.Exit(code=1) from e
 
 
 @app.command()
@@ -134,8 +134,9 @@ def config(
 
         parsed_value = _parse_value(value)
         use_case.execute(subcommand, key, parsed_value)
-    except ConfigError as e:
-        raise typer.BadParameter(str(e)) from e
+    except Exception as e:
+        typer.echo(str(e), err=True)
+        raise typer.Exit(code=1) from e
 
 
 def _parse_value(value: str) -> TomlValue:
