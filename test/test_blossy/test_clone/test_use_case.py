@@ -80,7 +80,7 @@ class TestCloneUseCase:
         use_case.execute(["blossy-cli"], use_https=True)
 
         assert subprocess_adapter.calls == [
-            ("git", "clone", "https://github.com:ravensakurai/blossy-cli.git"),
+            ("git", "clone", "https://github.com/ravensakurai/blossy-cli.git"),
         ]
 
     def test_execute_missing_user_raises(
