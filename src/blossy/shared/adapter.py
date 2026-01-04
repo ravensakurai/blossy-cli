@@ -1,5 +1,6 @@
 """Shared adapters for Blossy."""
 
+import subprocess
 from pathlib import Path
 
 
@@ -18,3 +19,12 @@ class FileAdapter:
     def write_text(self, path: Path, content: str) -> None:
         """Write text to a file at the given path."""
         path.write_text(content)
+
+
+class SubprocessAdapter:
+    """Adapter for subprocess operations."""
+
+    def run(self, *args: str) -> None:
+        """Run a subprocess with the given arguments."""
+
+        subprocess.run(args, check=True)

@@ -15,7 +15,7 @@ from blossy.countc.use_case import CountCharactersUseCaseFactory
 from blossy.countl.use_case import CountLinesUseCaseFactory
 from blossy.perc.use_case import PercentageUseCaseFactory
 from blossy.rand.use_case import RandomUseCaseFactory
-from blossy.shared.adapter import FileAdapter
+from blossy.shared.adapter import FileAdapter, SubprocessAdapter
 from blossy.shared.error import ConfigError
 from blossy.shared.model import SUPPORTED_CONFIG_TYPES, TomlValue
 from blossy.shared.repository import ConfigRepository
@@ -101,8 +101,9 @@ def clone(
     """
     try:
         file_adapter = FileAdapter()
+        subprocess_adapter = SubprocessAdapter()
         repository = ConfigRepository(file_adapter)
-        use_case = CloneUseCaseFactory.get_use_case(repository)
+        use_case = CloneUseCaseFactory.get_use_case(repository, subprocess_adapter)
         use_case.execute(repositories, use_https)
     except Exception as e:
         typer.echo(str(e), err=True)

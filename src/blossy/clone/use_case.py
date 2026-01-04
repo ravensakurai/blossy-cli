@@ -1,6 +1,5 @@
 """Module for CLONE use cases."""
 
-from subprocess import run
 from typing import Protocol
 
 from blossy.shared.error import ConfigError
@@ -23,6 +22,14 @@ class ConfigRepository(Protocol):
         ...
 
 
+class SubprocessAdapter(Protocol):
+    """Adapter for subprocess operations."""
+
+    def run(self, *args: str) -> None:
+        """Run a subprocess with the given arguments."""
+        ...
+
+
 class CloneUseCase(Protocol):
     """Use case for cloning GitHub repositories."""
 
@@ -33,18 +40,24 @@ class CloneUseCaseFactory:
     """Factory for creating CLONE use cases."""
 
     @staticmethod
-    def get_use_case(config_repository: ConfigRepository) -> CloneUseCase:
+    def get_use_case(
+        config_repository: ConfigRepository, subprocess_adapter: SubprocessAdapter
+    ) -> CloneUseCase:
         """Get an instance of the CLONE use case based on the flags."""
-        return _CloneUseCaseOption1(config_repository)
+        return _CloneUseCaseOption1(config_repository, subprocess_adapter)
 
 
 class _CloneUseCaseOption1:
     """Use case for cloning GitHub repositories."""
 
     _config_repository: ConfigRepository
+    _subprocess_adapter: SubprocessAdapter
 
-    def __init__(self, config_repository: ConfigRepository) -> None:
+    def __init__(
+        self, config_repository: ConfigRepository, subprocess_adapter: SubprocessAdapter
+    ) -> None:
         self._config_repository = config_repository
+        self._subprocess_adapter = subprocess_adapter
 
     def execute(self, repositories: list[str], use_https: bool) -> None:
         prefix = _PREFIX_HTTPS if use_https else _PREFIX_SSH
@@ -57,7 +70,7 @@ class _CloneUseCaseOption1:
                 repository=repo,
             )
 
-            run(["git", "clone", repo_url], check=True)
+            self._subprocess_adapter.run("git", "clone", repo_url)
 
     def _load_configured_user(self) -> str:
         user = self._config_repository.get_property("clone", "github-user")
