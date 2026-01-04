@@ -1,4 +1,4 @@
-"""Module for CONFIGURATE services."""
+"""Module for CONFIGURE services."""
 
 from dataclasses import dataclass
 from typing import Any

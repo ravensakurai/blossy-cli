@@ -4,7 +4,7 @@ from typing import Any
 
 import pytest
 
-from blossy.config.use_case import ConfigurateUseCase, ConfigurateUseCaseFactory
+from blossy.config.use_case import ConfigureUseCase, ConfigureUseCaseFactory
 from blossy.shared.error import ConfigError
 from blossy.shared.repository import TomlValue
 
@@ -73,15 +73,15 @@ def config_repository() -> MockConfigRepository:
 def use_case(
     config_validator: MockConfigValidator,
     config_repository: MockConfigRepository,
-) -> ConfigurateUseCase:
-    return ConfigurateUseCaseFactory.get_use_case(config_validator, config_repository)
+) -> ConfigureUseCase:
+    return ConfigureUseCaseFactory.get_use_case(config_validator, config_repository)
 
 
-class TestConfigurateUseCase:
+class TestConfigureUseCase:
     def test_execute_valid_configuration(
         self,
         monkeypatch,
-        use_case: ConfigurateUseCase,
+        use_case: ConfigureUseCase,
         config_validator: MockConfigValidator,
         config_repository: MockConfigRepository,
     ) -> None:
@@ -99,7 +99,7 @@ class TestConfigurateUseCase:
     def test_execute_unsupported_subcommand(
         self,
         monkeypatch,
-        use_case: ConfigurateUseCase,
+        use_case: ConfigureUseCase,
         config_validator: MockConfigValidator,
         config_repository: MockConfigRepository,
     ) -> None:
@@ -113,7 +113,7 @@ class TestConfigurateUseCase:
     def test_execute_unsupported_key(
         self,
         monkeypatch,
-        use_case: ConfigurateUseCase,
+        use_case: ConfigureUseCase,
         config_validator: MockConfigValidator,
         config_repository: MockConfigRepository,
     ) -> None:
@@ -128,7 +128,7 @@ class TestConfigurateUseCase:
     def test_execute_invalid_value_type(
         self,
         monkeypatch,
-        use_case: ConfigurateUseCase,
+        use_case: ConfigureUseCase,
         config_validator: MockConfigValidator,
         config_repository: MockConfigRepository,
     ) -> None:

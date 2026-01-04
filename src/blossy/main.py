@@ -10,7 +10,7 @@ from blossy.calc.service import ExpressionLexer, ExpressionParser
 from blossy.calc.use_case import CalculateUseCaseFactory, PostfixedExpressionParser
 from blossy.clone.use_case import CloneUseCaseFactory
 from blossy.config.service import ConfigValidator
-from blossy.config.use_case import ConfigurateUseCaseFactory
+from blossy.config.use_case import ConfigureUseCaseFactory
 from blossy.countc.use_case import CountCharactersUseCaseFactory
 from blossy.countl.use_case import CountLinesUseCaseFactory
 from blossy.perc.use_case import PercentageUseCaseFactory
@@ -121,7 +121,7 @@ def config(
     ],
 ):
     """
-    CONFIGURATE
+    CONFIGURE
 
     Set a configuration value for a specific subcommand.
     """
@@ -130,7 +130,7 @@ def config(
         file_adapter = FileAdapter()
         validator = ConfigValidator()
         repository = ConfigRepository(file_adapter)
-        use_case = ConfigurateUseCaseFactory.get_use_case(validator, repository)
+        use_case = ConfigureUseCaseFactory.get_use_case(validator, repository)
 
         parsed_value = _parse_value(value)
         use_case.execute(subcommand, key, parsed_value)

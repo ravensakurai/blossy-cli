@@ -1,4 +1,4 @@
-"""Module for CONFIGURATE use cases."""
+"""Module for CONFIGURE use cases."""
 
 from typing import Any, Protocol
 
@@ -30,24 +30,24 @@ class ConfigRepository(Protocol):
         ...
 
 
-class ConfigurateUseCase(Protocol):
+class ConfigureUseCase(Protocol):
     """Use case for setting configurations."""
 
     def execute(self, subcommand: str, key: str, value: TomlValue) -> None: ...
 
 
-class ConfigurateUseCaseFactory:
-    """Factory for creating CONFIGURATE use cases."""
+class ConfigureUseCaseFactory:
+    """Factory for creating CONFIGURE use cases."""
 
     @staticmethod
     def get_use_case(
         validator: ConfigValidator, repository: ConfigRepository
-    ) -> ConfigurateUseCase:
-        """Get an instance of the CONFIGURATE use case based on the flags."""
-        return _ConfigurateUseCaseOption1(validator, repository)
+    ) -> ConfigureUseCase:
+        """Get an instance of the CONFIGURE use case based on the flags."""
+        return _ConfigureUseCaseOption1(validator, repository)
 
 
-class _ConfigurateUseCaseOption1:
+class _ConfigureUseCaseOption1:
     """Use case for cloning GitHub repositories."""
 
     _validator: ConfigValidator
