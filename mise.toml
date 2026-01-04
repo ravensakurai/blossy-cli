@@ -11,28 +11,20 @@ run = ["poetry lock", "poetry install"]
 alias = "fmt"
 description = "Format code"
 run = [
-    "poetry run isort {{config_root}}/src",
-    "poetry run black {{config_root}}/src",
-    "poetry run isort {{config_root}}/test",
-    "poetry run black {{config_root}}/test",
+    "poetry run black {{config_root}}/src {{config_root}}/test",
+    "poetry run isort {{config_root}}/src {{config_root}}/test",
 ]
 wait_for = ["dependencies"]
 
 [tasks.type-check]
 alias = "type"
 description = "Run type checker"
-run = [
-    "poetry run pyright {{config_root}}/src",
-    "poetry run pyright {{config_root}}/test",
-]
+run = ["poetry run pyright {{config_root}}/src {{config_root}}/test"]
 wait_for = ["dependencies", "format"]
 
 [tasks.lint]
 description = "Run linter"
-run = [
-    "poetry run pylint {{config_root}}/src",
-    "poetry run pylint {{config_root}}/test",
-]
+run = ["poetry run pylint {{config_root}}/src {{config_root}}/test"]
 wait_for = ["dependencies", "format", "type-check"]
 
 [tasks.check]
