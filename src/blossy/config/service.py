@@ -13,7 +13,7 @@ class _Property:
     value_type: type
 
 
-class ConfigGatekeeer:
+class ConfigGatekeeper:
     """Service for handling configuration rules."""
 
     _COMMANDS = frozenset({"clone"})

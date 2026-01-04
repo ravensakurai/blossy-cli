@@ -6,7 +6,7 @@ from blossy.shared.error import ConfigError, InternalError
 from blossy.shared.repository import TomlValue
 
 
-class ConfigGatekeeer(Protocol):
+class ConfigGatekeeper(Protocol):
     """Service for handling configuration rules."""
 
     def is_subcommand_supported(self, subcommand: str) -> bool:
@@ -45,7 +45,7 @@ class ConfigurateUseCaseFactory:
 
     @staticmethod
     def get_use_case(
-        gatekeeper: ConfigGatekeeer, repository: ConfigRepository
+        gatekeeper: ConfigGatekeeper, repository: ConfigRepository
     ) -> ConfigurateUseCase:
         """Get an instance of the CONFIGURATE use case based on the flags."""
         return _ConfigurateUseCaseOption1(gatekeeper, repository)
@@ -54,10 +54,10 @@ class ConfigurateUseCaseFactory:
 class _ConfigurateUseCaseOption1:
     """Use case for cloning GitHub repositories."""
 
-    _gatekeeper: ConfigGatekeeer
+    _gatekeeper: ConfigGatekeeper
     _repository: ConfigRepository
 
-    def __init__(self, gatekeeper: ConfigGatekeeer, repository: ConfigRepository) -> None:
+    def __init__(self, gatekeeper: ConfigGatekeeper, repository: ConfigRepository) -> None:
         self._gatekeeper = gatekeeper
         self._repository = repository
 
