@@ -8,6 +8,7 @@ import typer
 
 from blossy.calc.service import ExpressionLexer, ExpressionParser
 from blossy.calc.use_case import CalculateUseCaseFactory, PostfixedExpressionParser
+from blossy.clone.use_case import CloneUseCaseFactory
 from blossy.config.service import ConfigGatekeeper
 from blossy.config.use_case import ConfigurateUseCaseFactory
 from blossy.countc.use_case import CountCharactersUseCaseFactory
@@ -80,6 +81,31 @@ def calc(
     except Exception as e:
         raise typer.BadParameter(str(e)) from e
     typer.echo()
+
+
+@app.command()
+def clone(
+    repositories: Annotated[
+        list[str],
+        typer.Argument(help="GitHub repository names to clone."),
+    ],
+    use_https: Annotated[
+        bool,
+        typer.Option("--https", help="Use HTTPS protocol instead of SSH."),
+    ] = False,
+):
+    """
+    CLONE
+
+    Clone one or more GitHub repositories from the configured user account.
+    """
+    try:
+        file_adapter = FileAdapter()
+        repository = ConfigRepository(file_adapter)
+        use_case = CloneUseCaseFactory.get_use_case(repository)
+        use_case.execute(repositories, use_https)
+    except Exception as e:
+        typer.echo(str(e), err=True)
 
 
 @app.command()
