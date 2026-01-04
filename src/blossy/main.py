@@ -3,15 +3,24 @@
 from pathlib import Path
 from typing import Annotated
 
+import tomlkit
 import typer
 
 from blossy.calc.service import ExpressionLexer, ExpressionParser
 from blossy.calc.use_case import CalculateUseCaseFactory, PostfixedExpressionParser
+from blossy.clone.use_case import CloneUseCaseFactory
+from blossy.config.service import ConfigValidator
+from blossy.config.use_case import ConfigureUseCaseFactory
 from blossy.countc.use_case import CountCharactersUseCaseFactory
 from blossy.countl.use_case import CountLinesUseCaseFactory
 from blossy.perc.use_case import PercentageUseCaseFactory
 from blossy.rand.use_case import RandomUseCaseFactory
+from blossy.shared.adapter import FileAdapter, SubprocessAdapter
+from blossy.shared.model import SUPPORTED_CONFIG_TYPES, TomlValue
+from blossy.shared.repository import ConfigRepository
 from blossy.stddz.use_case import StandardizeUseCaseFactory
+
+# pylint: disable=broad-exception-caught
 
 app = typer.Typer(name="blossy", help="A lil' bud that helps you with stuff (it's a utility CLI).")
 
@@ -70,6 +79,74 @@ def calc(
         use_case.execute(expression)
     except Exception as e:
         raise typer.BadParameter(str(e)) from e
+
+
+@app.command()
+def clone(
+    repositories: Annotated[
+        list[str],
+        typer.Argument(help="GitHub repository names to clone."),
+    ],
+    use_https: Annotated[
+        bool,
+        typer.Option("--https", help="Use HTTPS protocol instead of SSH."),
+    ] = False,
+):
+    """
+    CLONE
+
+    Clone one or more GitHub repositories from the configured user account.
+    """
+    try:
+        file_adapter = FileAdapter()
+        subprocess_adapter = SubprocessAdapter()
+        repository = ConfigRepository(file_adapter)
+        use_case = CloneUseCaseFactory.get_use_case(repository, subprocess_adapter)
+        use_case.execute(repositories, use_https)
+    except Exception as e:
+        typer.echo(str(e), err=True)
+        raise typer.Exit(code=1) from e
+
+
+@app.command()
+def config(
+    subcommand: Annotated[str, typer.Argument(help="Subcommand to configure.")],
+    key: Annotated[
+        str,
+        typer.Argument(help="Configuration key to set."),
+    ],
+    value: Annotated[
+        str,
+        typer.Argument(help="Value to assign to the configuration key."),
+    ],
+):
+    """
+    CONFIGURE
+
+    Set a configuration value for a specific subcommand.
+    """
+
+    try:
+        file_adapter = FileAdapter()
+        validator = ConfigValidator()
+        repository = ConfigRepository(file_adapter)
+        use_case = ConfigureUseCaseFactory.get_use_case(validator, repository)
+
+        parsed_value = _parse_value(value)
+        use_case.execute(subcommand, key, parsed_value)
+    except Exception as e:
+        typer.echo(str(e), err=True)
+        raise typer.Exit(code=1) from e
+
+
+def _parse_value(value: str) -> TomlValue:
+    try:
+        parsed = tomlkit.parse(f"value = {value}")
+        toml_item = parsed["value"]
+        unwrapped = toml_item.unwrap()
+        return unwrapped if isinstance(unwrapped, tuple(SUPPORTED_CONFIG_TYPES)) else value
+    except Exception:  # pylint: disable=broad-exception-caught
+        return value
 
 
 @app.command()
