@@ -80,7 +80,6 @@ def calc(
         use_case.execute(expression)
     except Exception as e:
         raise typer.BadParameter(str(e)) from e
-    typer.echo()
 
 
 @app.command()
